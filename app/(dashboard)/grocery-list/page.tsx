@@ -4,9 +4,11 @@ import { useInventoryStore } from "@/lib/store/useInventoryStore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ShoppingCart } from "lucide-react";
+import { useTranslation } from "@/lib/hooks/useTranslation";
 
 export default function GroceryListPage() {
   const { items } = useInventoryStore();
+  const { t } = useTranslation();
 
   const lowStockItems = items.filter(
     (item) => item.quantity <= (item.threshold || 0)
@@ -15,12 +17,12 @@ export default function GroceryListPage() {
   return (
     <div className="p-4 space-y-4 pb-20">
       <h1 className="text-2xl font-bold flex items-center gap-2">
-        <ShoppingCart className="h-6 w-6" /> Grocery List
+        <ShoppingCart className="h-6 w-6" /> {t.grocery.title}
       </h1>
-      
+
       {lowStockItems.length === 0 ? (
         <div className="text-center py-10 text-muted-foreground">
-          <p>Everything is well-stocked!</p>
+          <p>{t.grocery.empty}</p>
         </div>
       ) : (
         <div className="grid gap-4">
@@ -30,12 +32,12 @@ export default function GroceryListPage() {
                 <CardTitle className="text-sm font-medium">
                   {item.name}
                 </CardTitle>
-                <Badge variant="destructive">Low Stock</Badge>
+                <Badge variant="destructive">{t.grocery.low_stock}</Badge>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{item.quantity} {item.unit}</div>
                 <p className="text-xs text-muted-foreground">
-                  Threshold: {item.threshold} {item.unit}
+                  {t.grocery.threshold}: {item.threshold} {item.unit}
                 </p>
               </CardContent>
             </Card>

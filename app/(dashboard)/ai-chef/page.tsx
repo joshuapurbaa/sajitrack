@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2, ChefHat } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useTranslation } from "@/lib/hooks/useTranslation";
 
 interface Recipe {
   name: string;
@@ -20,14 +21,15 @@ interface Recipe {
 
 export default function AIChefPage() {
   const { items } = useInventoryStore();
+  const { t } = useTranslation();
   const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const toggleIngredient = (name: string) => {
-    setSelectedIngredients(prev => 
-      prev.includes(name) 
+    setSelectedIngredients(prev =>
+      prev.includes(name)
         ? prev.filter(i => i !== name)
         : [...prev, name]
     );
@@ -35,7 +37,7 @@ export default function AIChefPage() {
 
   const handleGenerateRecipes = async () => {
     if (selectedIngredients.length === 0) {
-      setError("Please select at least one ingredient.");
+      setError(t.ai_chef.select_ingredients_error);
       return;
     }
 
@@ -51,16 +53,16 @@ export default function AIChefPage() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to generate recipes");
+        throw new Error(t.ai_chef.generic_error);
       }
 
       const data = await response.json();
       if (data.error) throw new Error(data.error);
-      
+
       setRecipes(data.recipes);
     } catch (err) {
       console.error(err);
-      setError("Something went wrong. Please try again.");
+      setError(t.ai_chef.generic_error);
     } finally {
       setLoading(false);
     }
@@ -70,33 +72,33 @@ export default function AIChefPage() {
     <div className="p-4 space-y-6 pb-20">
       <div className="flex flex-col space-y-2">
         <h1 className="text-2xl font-bold flex items-center gap-2">
-          <ChefHat className="h-6 w-6 text-primary" /> AI Chef
+          <ChefHat className="h-6 w-6 text-primary" /> {t.ai_chef.title}
         </h1>
-        <p className="text-muted-foreground">Select ingredients to generate recipes with AI.</p>
+        <p className="text-muted-foreground">{t.ai_chef.subtitle}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Ingredient Selection */}
         <Card className="md:col-span-1 h-fit">
           <CardHeader>
-            <CardTitle>Pantry Ingredients</CardTitle>
-            <CardDescription>Select what you want to use.</CardDescription>
+            <CardTitle>{t.ai_chef.pantry_ingredients}</CardTitle>
+            <CardDescription>{t.ai_chef.select_desc}</CardDescription>
           </CardHeader>
           <CardContent>
             {items.length === 0 ? (
-              <p className="text-sm text-muted-foreground">Your pantry is empty.</p>
+              <p className="text-sm text-muted-foreground">{t.ai_chef.pantry_empty}</p>
             ) : (
               <ScrollArea className="h-[300px] pr-4">
                 <div className="space-y-2">
                   {items.map((item) => (
                     <div key={item._id || item.localId} className="flex items-center space-x-2">
-                      <Checkbox 
-                        id={`ing-${item.name}`} 
+                      <Checkbox
+                        id={`ing-${item.name}`}
                         checked={selectedIngredients.includes(item.name)}
                         onCheckedChange={() => toggleIngredient(item.name)}
                       />
-                      <label 
-                        htmlFor={`ing-${item.name}`} 
+                      <label
+                        htmlFor={`ing-${item.name}`}
                         className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
                       >
                         {item.name} <span className="text-xs text-muted-foreground">({item.quantity} {item.unit})</span>
@@ -108,17 +110,17 @@ export default function AIChefPage() {
             )}
           </CardContent>
           <CardFooter>
-            <Button 
-              className="w-full" 
-              onClick={handleGenerateRecipes} 
+            <Button
+              className="w-full"
+              onClick={handleGenerateRecipes}
               disabled={loading || selectedIngredients.length === 0}
             >
               {loading ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Generating...
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t.ai_chef.generating}
                 </>
               ) : (
-                "Generate Recipes"
+                t.ai_chef.generate
               )}
             </Button>
           </CardFooter>
@@ -145,7 +147,7 @@ export default function AIChefPage() {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
-                      <h4 className="font-semibold mb-2 text-sm">Ingredients</h4>
+                      <h4 className="font-semibold mb-2 text-sm">{t.ai_chef.ingredients}</h4>
                       <ul className="list-disc pl-5 text-sm space-y-1">
                         {recipe.ingredients.map((ing, i) => (
                           <li key={i}>{ing}</li>
@@ -153,7 +155,7 @@ export default function AIChefPage() {
                       </ul>
                     </div>
                     <div>
-                      <h4 className="font-semibold mb-2 text-sm">Instructions</h4>
+                      <h4 className="font-semibold mb-2 text-sm">{t.ai_chef.instructions}</h4>
                       <ol className="list-decimal pl-5 text-sm space-y-1">
                         {recipe.instructions.map((step, i) => (
                           <li key={i}>{step}</li>
@@ -165,11 +167,11 @@ export default function AIChefPage() {
               ))}
             </div>
           )}
-          
+
           {!loading && recipes.length === 0 && !error && (
             <div className="flex flex-col items-center justify-center h-64 text-center text-muted-foreground border-2 border-dashed rounded-lg">
               <ChefHat className="h-10 w-10 mb-2 opacity-20" />
-              <p>Select ingredients and click generate to see recipes.</p>
+              <p>{t.ai_chef.no_recipes}</p>
             </div>
           )}
         </div>

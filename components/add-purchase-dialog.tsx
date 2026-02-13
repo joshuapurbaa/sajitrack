@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -26,6 +25,17 @@ import { Input } from "@/components/ui/input";
 import { Plus, Trash, ShoppingBag } from "lucide-react";
 import { usePurchaseStore } from "@/lib/store/usePurchaseStore";
 import { useInventoryStore } from "@/lib/store/useInventoryStore";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useCurrency } from "@/lib/hooks/useCurrency";
+import { useTranslation } from "@/lib/hooks/useTranslation";
+
+const UNITS = ['pcs', 'kg', 'g', 'L', 'ml'];
 
 const purchaseSchema = z.object({
   storeName: z.string().optional(),
@@ -42,6 +52,8 @@ export function AddPurchaseDialog() {
   const [open, setOpen] = useState(false);
   const addPurchase = usePurchaseStore((state) => state.addPurchase);
   const addItem = useInventoryStore((state) => state.addItem);
+  const { currency } = useCurrency();
+  const { t } = useTranslation();
 
   const form = useForm<z.infer<typeof purchaseSchema>>({
     resolver: zodResolver(purchaseSchema),
@@ -65,7 +77,7 @@ export function AddPurchaseDialog() {
     }));
 
     const totalCost = items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-    
+
     // Add to Purchase History
     addPurchase({
       localId: crypto.randomUUID(),
@@ -102,7 +114,7 @@ export function AddPurchaseDialog() {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Log Purchase</DialogTitle>
+          <DialogTitle>{t.common.log_purchase}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -112,7 +124,7 @@ export function AddPurchaseDialog() {
                 name="storeName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Store Name</FormLabel>
+                    <FormLabel>{t.expenses.store_name}</FormLabel>
                     <FormControl>
                       <Input placeholder="Grocery Store" {...field} />
                     </FormControl>
@@ -125,7 +137,7 @@ export function AddPurchaseDialog() {
                 name="date"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Date</FormLabel>
+                    <FormLabel>{t.common.date}</FormLabel>
                     <FormControl>
                       <Input type="date" {...field} />
                     </FormControl>
@@ -137,76 +149,88 @@ export function AddPurchaseDialog() {
 
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <h3 className="font-semibold">Items</h3>
+                <h3 className="font-semibold">{t.common.items}</h3>
                 <Button type="button" variant="outline" size="sm" onClick={() => append({ name: "", quantity: "1", price: "0", unit: "pcs" })}>
-                  <Plus className="h-4 w-4 mr-1" /> Add Item
+                  <Plus className="h-4 w-4 mr-1" /> {t.common.add_item}
                 </Button>
               </div>
-              
+
               {fields.map((field, index) => (
                 <div key={field.id} className="flex flex-col gap-2 p-3 border rounded-md">
-                   <div className="flex justify-between">
-                     <h4 className="text-sm font-medium">Item {index + 1}</h4>
-                     {fields.length > 1 && (
-                       <Button type="button" variant="ghost" size="icon" className="h-6 w-6 text-destructive" onClick={() => remove(index)}>
-                         <Trash className="h-3 w-3" />
-                       </Button>
-                     )}
-                   </div>
-                   <div className="grid grid-cols-2 gap-2">
-                     <FormField
-                       control={form.control}
-                       name={`items.${index}.name`}
-                       render={({ field }) => (
-                         <FormItem className="col-span-2">
-                           <FormControl>
-                             <Input placeholder="Item Name" {...field} />
-                           </FormControl>
-                           <FormMessage />
-                         </FormItem>
-                       )}
-                     />
-                     <FormField
-                       control={form.control}
-                       name={`items.${index}.quantity`}
-                       render={({ field }) => (
-                         <FormItem>
-                           <FormControl>
-                             <Input type="number" step="0.1" placeholder="Qty" {...field} />
-                           </FormControl>
-                         </FormItem>
-                       )}
-                     />
-                     <FormField
-                       control={form.control}
-                       name={`items.${index}.unit`}
-                       render={({ field }) => (
-                         <FormItem>
-                           <FormControl>
-                             <Input placeholder="Unit" {...field} />
-                           </FormControl>
-                         </FormItem>
-                       )}
-                     />
-                     <FormField
-                       control={form.control}
-                       name={`items.${index}.price`}
-                       render={({ field }) => (
-                         <FormItem className="col-span-2">
-                            <FormLabel className="text-xs">Price/Unit</FormLabel>
-                           <FormControl>
-                             <Input type="number" step="0.01" placeholder="Price" {...field} />
-                           </FormControl>
-                         </FormItem>
-                       )}
-                     />
-                   </div>
+                  <div className="flex justify-between">
+                    <h4 className="text-sm font-medium">{t.common.items} {index + 1}</h4>
+                    {fields.length > 1 && (
+                      <Button type="button" variant="ghost" size="icon" className="h-6 w-6 text-destructive" onClick={() => remove(index)}>
+                        <Trash className="h-3 w-3" />
+                      </Button>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <FormField
+                      control={form.control}
+                      name={`items.${index}.name`}
+                      render={({ field }) => (
+                        <FormItem className="col-span-2">
+                          <FormControl>
+                            <Input placeholder={t.common.name} {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`items.${index}.quantity`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input type="number" step="0.1" placeholder={t.common.quantity} {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`items.${index}.unit`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder={t.common.unit} />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {UNITS.map((unit) => (
+                                <SelectItem key={unit} value={unit}>
+                                  {unit}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`items.${index}.price`}
+                      render={({ field }) => (
+                        <FormItem className="col-span-2">
+                          <FormLabel className="text-xs">{t.common.price_unit} ({currency})</FormLabel>
+                          <FormControl>
+                            <Input type="number" step="0.01" placeholder={t.common.price} {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
               ))}
             </div>
 
             <DialogFooter>
-               <Button type="submit" className="w-full">Save Purchase</Button>
+              <Button type="submit" className="w-full">{t.common.save_purchase}</Button>
             </DialogFooter>
           </form>
         </Form>

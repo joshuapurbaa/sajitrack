@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/select";
 import { useEffect } from "react";
 import { useInventoryStore, InventoryItem } from "@/lib/store/useInventoryStore";
+import { useTranslation } from "@/lib/hooks/useTranslation";
 
 // ... (keep usage of formSchema)
 
@@ -54,7 +55,8 @@ interface AddItemDialogProps {
 
 export function AddItemDialog({ open, onOpenChange, itemToEdit }: AddItemDialogProps) {
   const { addItem, updateItem } = useInventoryStore();
-  
+  const { t } = useTranslation();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -89,25 +91,25 @@ export function AddItemDialog({ open, onOpenChange, itemToEdit }: AddItemDialogP
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     if (itemToEdit) {
-        updateItem(itemToEdit._id || itemToEdit.localId!, {
-            name: values.name,
-            quantity: Number(values.quantity),
-            unit: values.unit,
-            expiryDate: values.expiryDate ? new Date(values.expiryDate) : undefined,
-            threshold: Number(values.threshold || 1),
-        });
+      updateItem(itemToEdit._id || itemToEdit.localId!, {
+        name: values.name,
+        quantity: Number(values.quantity),
+        unit: values.unit,
+        expiryDate: values.expiryDate ? new Date(values.expiryDate) : undefined,
+        threshold: Number(values.threshold || 1),
+      });
     } else {
-        addItem({
-            localId: crypto.randomUUID(),
-            name: values.name,
-            quantity: Number(values.quantity),
-            unit: values.unit,
-            expiryDate: values.expiryDate ? new Date(values.expiryDate) : undefined,
-            threshold: values.threshold ? Number(values.threshold) : 1,
-            purchaseDate: new Date(),
-            nutrition: { calories: 0, protein: 0, carbs: 0, fat: 0 },
-            category: 'Uncategorized'
-        });
+      addItem({
+        localId: crypto.randomUUID(),
+        name: values.name,
+        quantity: Number(values.quantity),
+        unit: values.unit,
+        expiryDate: values.expiryDate ? new Date(values.expiryDate) : undefined,
+        threshold: values.threshold ? Number(values.threshold) : 1,
+        purchaseDate: new Date(),
+        nutrition: { calories: 0, protein: 0, carbs: 0, fat: 0 },
+        category: 'Uncategorized'
+      });
     }
     onOpenChange(false);
   }
@@ -116,7 +118,7 @@ export function AddItemDialog({ open, onOpenChange, itemToEdit }: AddItemDialogP
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{itemToEdit ? "Edit Item" : "Add New Item"}</DialogTitle>
+          <DialogTitle>{itemToEdit ? t.inventory.edit_item_title : t.inventory.add_item_title}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -125,7 +127,7 @@ export function AddItemDialog({ open, onOpenChange, itemToEdit }: AddItemDialogP
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>{t.common.name}</FormLabel>
                   <FormControl>
                     <Input placeholder="Apple, Milk, etc." {...field} />
                   </FormControl>
@@ -139,7 +141,7 @@ export function AddItemDialog({ open, onOpenChange, itemToEdit }: AddItemDialogP
                 name="quantity"
                 render={({ field }) => (
                   <FormItem className="flex-1">
-                    <FormLabel>Quantity</FormLabel>
+                    <FormLabel>{t.common.quantity}</FormLabel>
                     <FormControl>
                       <Input type="number" step="0.1" {...field} />
                     </FormControl>
@@ -152,11 +154,11 @@ export function AddItemDialog({ open, onOpenChange, itemToEdit }: AddItemDialogP
                 name="unit"
                 render={({ field }) => (
                   <FormItem className="w-24">
-                    <FormLabel>Unit</FormLabel>
+                    <FormLabel>{t.common.unit}</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Unit" />
+                          <SelectValue placeholder={t.common.unit} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -172,13 +174,13 @@ export function AddItemDialog({ open, onOpenChange, itemToEdit }: AddItemDialogP
                 )}
               />
             </div>
-            
+
             <FormField
               control={form.control}
               name="expiryDate"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Expiry Date (Optional)</FormLabel>
+                  <FormLabel>{t.inventory.expiry_date} ({t.common.optional})</FormLabel>
                   <FormControl>
                     <Input type="date" {...field} />
                   </FormControl>
@@ -188,7 +190,7 @@ export function AddItemDialog({ open, onOpenChange, itemToEdit }: AddItemDialogP
             />
 
             <DialogFooter>
-               <Button type="submit">Save Item</Button>
+              <Button type="submit">{t.common.save_item}</Button>
             </DialogFooter>
           </form>
         </Form>

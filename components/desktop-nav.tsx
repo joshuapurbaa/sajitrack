@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -6,8 +5,9 @@ import { usePathname } from "next/navigation";
 import { Home, ShoppingCart, DollarSign, Bot, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/lib/hooks/useTranslation";
+import { ModeToggle } from "@/components/mode-toggle";
 
-export function BottomNav() {
+export function DesktopNav() {
   const pathname = usePathname();
   const { t } = useTranslation();
 
@@ -20,8 +20,12 @@ export function BottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 border-t bg-background p-2 pb-safe">
-      <div className="flex justify-around items-center">
+    <nav className="hidden md:flex w-64 flex-col border-r bg-background h-screen fixed left-0 top-0 overflow-y-auto">
+      <div className="p-6 flex justify-between items-center">
+        <h1 className="text-xl font-bold">SajiTrack</h1>
+        <ModeToggle />
+      </div>
+      <div className="flex-1 px-4 space-y-2">
         {links.map(({ href, label, icon: Icon }) => {
           const isActive = pathname === href;
           return (
@@ -29,13 +33,13 @@ export function BottomNav() {
               key={href}
               href={href}
               className={cn(
-                "flex flex-col items-center justify-center w-full py-2 text-xs transition-colors",
+                "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
                 isActive
-                  ? "text-primary font-medium"
-                  : "text-muted-foreground hover:text-primary"
+                  ? "bg-primary text-primary-foreground font-medium"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
               )}
             >
-              <Icon className="h-6 w-6 mb-1" />
+              <Icon className="h-5 w-5" />
               {label}
             </Link>
           );
