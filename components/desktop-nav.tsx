@@ -13,7 +13,7 @@ export function DesktopNav() {
 
   const links = [
     { href: "/inventory", label: t.nav.pantry, icon: Home },
-    { href: "/grocery-list", label: t.nav.shop, icon: ShoppingCart },
+
     { href: "/expenses", label: t.nav.expenses, icon: DollarSign },
     { href: "/ai-chef", label: t.nav.ai_chef, icon: Bot },
     { href: "/profile", label: t.nav.profile, icon: User },
