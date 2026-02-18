@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, ShoppingCart, DollarSign, Bot, User } from "lucide-react";
+import { Home, ShoppingCart, Wrench, Bot, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/lib/hooks/useTranslation";
 import { ModeToggle } from "@/components/mode-toggle";
@@ -14,7 +14,8 @@ export function DesktopNav() {
   const links = [
     { href: "/inventory", label: t.nav.pantry, icon: Home },
 
-    { href: "/expenses", label: t.nav.expenses, icon: DollarSign },
+
+    { href: "/tools", label: t.nav.tools, icon: Wrench },
     { href: "/ai-chef", label: t.nav.ai_chef, icon: Bot },
     { href: "/profile", label: t.nav.profile, icon: User },
   ];

@@ -3,9 +3,29 @@ export const translations = {
         nav: {
             pantry: "Pantry",
             shop: "Shop",
+            tools: "Tools",
             expenses: "Expenses",
             ai_chef: "AI Chef",
             profile: "Profile"
+        },
+        tools: {
+            title: "Tools",
+            expenses_desc: "Track your spending and manage your budget.",
+            timer_desc: "Stopwatch and timer for your cooking needs.",
+            timer_title: "Stopwatch & Timer",
+            stopwatch: "Stopwatch",
+            timer: "Timer",
+            start: "Start",
+            stop: "Stop",
+            reset: "Reset",
+            lap: "Lap",
+            resume: "Resume",
+            pause: "Pause",
+            set_timer: "Set Timer",
+            time_up: "Time is up!",
+            hours: "Hours",
+            minutes: "Minutes",
+            seconds: "Seconds"
         },
         profile: {
             title: "Profile & Settings",
@@ -81,9 +101,29 @@ export const translations = {
         nav: {
             pantry: "Despensa",
             shop: "Tienda",
+            tools: "Herramientas",
             expenses: "Gastos",
             ai_chef: "Chef IA",
             profile: "Perfil"
+        },
+        tools: {
+            title: "Herramientas",
+            expenses_desc: "Rastrea tus gastos y administra tu presupuesto.",
+            timer_desc: "Cronómetro y temporizador para tus necesidades de cocina.",
+            timer_title: "Cronómetro y Temporizador",
+            stopwatch: "Cronómetro",
+            timer: "Temporizador",
+            start: "Iniciar",
+            stop: "Detener",
+            reset: "Reiniciar",
+            lap: "Vuelta",
+            resume: "Reanudar",
+            pause: "Pausar",
+            set_timer: "Configurar Temporizador",
+            time_up: "¡Se acabó el tiempo!",
+            hours: "Horas",
+            minutes: "Minutos",
+            seconds: "Segundos"
         },
         profile: {
             title: "Perfil y Configuración",
@@ -159,9 +199,29 @@ export const translations = {
         nav: {
             pantry: "Garde-manger",
             shop: "Magasin",
+            tools: "Outils",
             expenses: "Dépenses",
             ai_chef: "Chef IA",
             profile: "Profil"
+        },
+        tools: {
+            title: "Outils",
+            expenses_desc: "Suivez vos dépenses et gérez votre budget.",
+            timer_desc: "Chronomètre et minuterie pour vos besoins culinaires.",
+            timer_title: "Chronomètre et Minuterie",
+            stopwatch: "Chronomètre",
+            timer: "Minuterie",
+            start: "Démarrer",
+            stop: "Arrêter",
+            reset: "Réinitialiser",
+            lap: "Tour",
+            resume: "Reprendre",
+            pause: "Pause",
+            set_timer: "Régler la minuterie",
+            time_up: "Le temps est écoulé !",
+            hours: "Heures",
+            minutes: "Minutes",
+            seconds: "Secondes"
         },
         profile: {
             title: "Profil et Paramètres",
@@ -237,9 +297,29 @@ export const translations = {
         nav: {
             pantry: "Vorrat",
             shop: "Einkaufen",
+            tools: "Werkzeuge",
             expenses: "Ausgaben",
             ai_chef: "KI-Chef",
             profile: "Profil"
+        },
+        tools: {
+            title: "Werkzeuge",
+            expenses_desc: "Verfolgen Sie Ihre Ausgaben und verwalten Sie Ihr Budget.",
+            timer_desc: "Stoppuhr und Timer für Ihre Kochbedürfnisse.",
+            timer_title: "Stoppuhr & Timer",
+            stopwatch: "Stoppuhr",
+            timer: "Timer",
+            start: "Start",
+            stop: "Stopp",
+            reset: "Zurücksetzen",
+            lap: "Runde",
+            resume: "Weiter",
+            pause: "Pause",
+            set_timer: "Timer Einstellen",
+            time_up: "Die Zeit ist um!",
+            hours: "Stunden",
+            minutes: "Minuten",
+            seconds: "Sekunden"
         },
         profile: {
             title: "Profil & Einstellungen",
@@ -315,9 +395,29 @@ export const translations = {
         nav: {
             pantry: "Dapur",
             shop: "Belanja",
+            tools: "Alat",
             expenses: "Pengeluaran",
             ai_chef: "Koki AI",
             profile: "Profil"
+        },
+        tools: {
+            title: "Alat",
+            expenses_desc: "Lacak pengeluaran dan kelola anggaran Anda.",
+            timer_desc: "Stopwatch dan timer untuk kebutuhan memasak Anda.",
+            timer_title: "Stopwatch & Timer",
+            stopwatch: "Stopwatch",
+            timer: "Timer",
+            start: "Mulai",
+            stop: "Berhenti",
+            reset: "Ulang",
+            lap: "Putaran",
+            resume: "Lanjut",
+            pause: "Jeda",
+            set_timer: "Atur Timer",
+            time_up: "Waktu habis!",
+            hours: "Jam",
+            minutes: "Menit",
+            seconds: "Detik"
         },
         profile: {
             title: "Profil & Pengaturan",
