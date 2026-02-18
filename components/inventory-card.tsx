@@ -1,9 +1,10 @@
-
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Edit2, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { InventoryItem } from "@/lib/store/useInventoryStore";
+import { differenceInDays, formatDistanceToNow, isPast, isToday, parseISO } from "date-fns";
+import { cn } from "@/lib/utils";
 
 interface InventoryCardProps {
   item: InventoryItem;
@@ -14,33 +15,73 @@ interface InventoryCardProps {
 export function InventoryCard({ item, onEdit, onDelete }: InventoryCardProps) {
   const isLowStock = item.quantity <= (item.threshold || 0);
 
+  // Calculate expiry status
+  const expiryDate = item.expiryDate ? new Date(item.expiryDate) : null;
+  const purchaseDate = item.purchaseDate ? new Date(item.purchaseDate) : null;
+  const today = new Date();
+
+  let statusText = "";
+  let statusColor = "text-muted-foreground";
+
+  if (expiryDate) {
+    const daysUntilExpiry = differenceInDays(expiryDate, today);
+
+    if (daysUntilExpiry < 0) {
+      statusText = `Expired ${Math.abs(daysUntilExpiry)} days ago!`;
+      statusColor = "text-red-500 font-medium";
+    } else if (daysUntilExpiry <= 3) {
+      statusText = `Expiring in ${daysUntilExpiry} days!`;
+      statusColor = "text-orange-500 font-medium";
+    } else {
+      // Fallback if not expiring soon
+      if (purchaseDate) {
+        const daysIn = differenceInDays(today, purchaseDate);
+        statusText = `${daysIn} days in`;
+      } else {
+        statusText = `Expires in ${daysUntilExpiry} days`;
+      }
+    }
+  } else if (purchaseDate) {
+    const daysIn = differenceInDays(today, purchaseDate);
+    statusText = `${daysIn} days in`;
+  }
+
+  // Determine icon (fallback to name first letter if no icon)
+  const DisplayIcon = item.icon ? (
+    <span className="text-2xl">{item.icon}</span>
+  ) : (
+    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+      {item.name.charAt(0).toUpperCase()}
+    </div>
+  );
+
   return (
-    <Card className="w-full">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-lg font-bold">{item.name}</CardTitle>
-        {isLowStock && <Badge variant="destructive">Low Stock</Badge>}
-      </CardHeader>
-      <CardContent>
-        <div className="flex justify-between items-center">
-          <div className="text-2xl font-bold">
-            {item.quantity} <span className="text-sm font-normal text-muted-foreground">{item.unit}</span>
-          </div>
-          <div className="flex gap-2">
-            <Button variant="ghost" size="icon" onClick={() => onEdit(item)}>
-              <Edit2 className="h-4 w-4" />
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="text-destructive hover:text-destructive"
-              onClick={() => item._id || item.localId ? onDelete(item._id || item.localId!) : null}
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          </div>
+    <Card
+      className="w-full mb-3 cursor-pointer hover:bg-accent/50 transition-colors border-none shadow-sm"
+      onClick={() => onEdit(item)}
+    >
+      <CardContent className="p-4 flex items-center gap-4">
+        {/* Icon Section */}
+        <div className="flex-shrink-0">
+          {DisplayIcon}
         </div>
-        <div className="mt-2 text-xs text-muted-foreground">
-           Expires: {item.expiryDate ? new Date(item.expiryDate).toLocaleDateString() : 'N/A'}
+
+        {/* Main Content */}
+        <div className="flex-1 min-w-0">
+          <h3 className="font-bold text-base truncate">{item.name}</h3>
+          <p className={cn("text-sm", statusColor)}>
+            {statusText}
+          </p>
+        </div>
+
+        {/* Right Section: Quantity & Location */}
+        <div className="text-right flex flex-col items-end">
+          <div className="font-medium text-base">
+            {item.quantity} <span className="text-sm text-muted-foreground">{item.unit}</span>
+          </div>
+          <div className="text-sm text-muted-foreground">
+            {item.category || "Pantry"}
+          </div>
         </div>
       </CardContent>
     </Card>

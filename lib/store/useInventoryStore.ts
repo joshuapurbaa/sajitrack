@@ -13,6 +13,7 @@ export interface InventoryItem {
   purchaseDate?: Date;
   threshold?: number;
   category?: string;
+  icon?: string; // Emoji or icon name
   nutrition?: {
     calories: number;
     protein: number;

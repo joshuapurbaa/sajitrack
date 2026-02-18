@@ -35,6 +35,7 @@ import { useTranslation } from "@/lib/hooks/useTranslation";
 
 // ... (keep usage of formSchema)
 
+// ... imports
 const formSchema = z.object({
   name: z.string().min(2, {
     message: "Name must be at least 2 characters.",
@@ -43,6 +44,8 @@ const formSchema = z.object({
     message: "Quantity must be a number",
   }),
   unit: z.enum(["kg", "g", "L", "ml", "pcs"]),
+  category: z.enum(["Fridge", "Freezer", "Pantry"]),
+  icon: z.string().max(2).optional(), // limit to 1-2 chars for emoji
   expiryDate: z.string().optional(),
   threshold: z.string().optional(),
 });
@@ -63,6 +66,8 @@ export function AddItemDialog({ open, onOpenChange, itemToEdit }: AddItemDialogP
       name: "",
       quantity: "1",
       unit: "pcs",
+      category: "Pantry",
+      icon: "",
       threshold: "1",
     },
   });
@@ -74,6 +79,8 @@ export function AddItemDialog({ open, onOpenChange, itemToEdit }: AddItemDialogP
           name: itemToEdit.name,
           quantity: String(itemToEdit.quantity),
           unit: itemToEdit.unit as any,
+          category: (itemToEdit.category as any) || "Pantry",
+          icon: itemToEdit.icon || "",
           expiryDate: itemToEdit.expiryDate ? new Date(itemToEdit.expiryDate).toISOString().split('T')[0] : undefined,
           threshold: String(itemToEdit.threshold || 1),
         });
@@ -82,33 +89,34 @@ export function AddItemDialog({ open, onOpenChange, itemToEdit }: AddItemDialogP
           name: "",
           quantity: "1",
           unit: "pcs",
+          category: "Pantry",
+          icon: "",
           threshold: "1",
-          expiryDate: undefined, // ensure this is undefined for new items
+          expiryDate: undefined,
         });
       }
     }
   }, [open, itemToEdit, form]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    const commonData = {
+      name: values.name,
+      quantity: Number(values.quantity),
+      unit: values.unit,
+      category: values.category,
+      icon: values.icon,
+      expiryDate: values.expiryDate ? new Date(values.expiryDate) : undefined,
+      threshold: Number(values.threshold || 1),
+    };
+
     if (itemToEdit) {
-      updateItem(itemToEdit._id || itemToEdit.localId!, {
-        name: values.name,
-        quantity: Number(values.quantity),
-        unit: values.unit,
-        expiryDate: values.expiryDate ? new Date(values.expiryDate) : undefined,
-        threshold: Number(values.threshold || 1),
-      });
+      updateItem(itemToEdit._id || itemToEdit.localId!, commonData);
     } else {
       addItem({
         localId: crypto.randomUUID(),
-        name: values.name,
-        quantity: Number(values.quantity),
-        unit: values.unit,
-        expiryDate: values.expiryDate ? new Date(values.expiryDate) : undefined,
-        threshold: values.threshold ? Number(values.threshold) : 1,
+        ...commonData,
         purchaseDate: new Date(),
         nutrition: { calories: 0, protein: 0, carbs: 0, fat: 0 },
-        category: 'Uncategorized'
       });
     }
     onOpenChange(false);
@@ -122,19 +130,35 @@ export function AddItemDialog({ open, onOpenChange, itemToEdit }: AddItemDialogP
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t.common.name}</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Apple, Milk, etc." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="flex gap-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel>{t.common.name}</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Apple, Milk, etc." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="icon"
+                render={({ field }) => (
+                  <FormItem className="w-20">
+                    <FormLabel>Icon</FormLabel>
+                    <FormControl>
+                      <Input placeholder="🍎" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
             <div className="flex gap-4">
               <FormField
                 control={form.control}
@@ -174,6 +198,29 @@ export function AddItemDialog({ open, onOpenChange, itemToEdit }: AddItemDialogP
                 )}
               />
             </div>
+
+            <FormField
+              control={form.control}
+              name="category"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Category</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select category" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="Pantry">Pantry</SelectItem>
+                      <SelectItem value="Fridge">Fridge</SelectItem>
+                      <SelectItem value="Freezer">Freezer</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <FormField
               control={form.control}
