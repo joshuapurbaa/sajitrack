@@ -8,10 +8,16 @@ interface SettingsState {
     setCurrency: (currency: string) => void;
 }
 
+const getDeviceLanguage = () => {
+    if (typeof window === 'undefined') return 'en';
+    const lang = navigator.language.split('-')[0];
+    return ['en', 'es', 'fr', 'de', 'id'].includes(lang) ? lang : 'en';
+};
+
 export const useSettingsStore = create<SettingsState>()(
     persist(
         (set) => ({
-            language: 'en',
+            language: getDeviceLanguage(),
             currency: 'USD',
             setLanguage: (language) => set({ language }),
             setCurrency: (currency) => set({ currency }),

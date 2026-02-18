@@ -9,7 +9,7 @@ import { Plus, Search, Bell, SlidersHorizontal } from "lucide-react";
 import { AddItemDialog } from "@/components/add-item-dialog";
 import { useTranslation } from "@/lib/hooks/useTranslation";
 import { cn } from "@/lib/utils";
-// Note: AddItemDialog will be created in next step
+import { DeleteConfirmationDialog } from "@/components/delete-confirmation-dialog";
 
 export default function InventoryPage() {
   const { items, sync, deleteItem } = useInventoryStore();
@@ -18,6 +18,10 @@ export default function InventoryPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [itemToEdit, setItemToEdit] = useState<any>(null);
   const [activeFilter, setActiveFilter] = useState("All");
+
+  // Delete Confirmation State
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<any>(null);
 
   useEffect(() => {
     setIsHydrated(true);
@@ -36,24 +40,50 @@ export default function InventoryPage() {
   };
 
   const handleDelete = (id: string) => {
-    if (confirm(t.common.confirm_delete)) {
-      deleteItem(id);
+    const item = items.find((i) => (i._id === id || i.localId === id));
+    if (item) {
+      setItemToDelete(item);
+      setIsDeleteDialogOpen(true);
+    }
+  };
+
+  const confirmDelete = () => {
+    if (itemToDelete) {
+      deleteItem(itemToDelete._id || itemToDelete.localId);
+      setItemToDelete(null);
     }
   };
 
   // Filter Logic
+  const normalizeCategory = (cat?: string) => (cat || "").toLowerCase().trim();
+
   const filteredItems = items.filter(item => {
     if (activeFilter === "All") return true;
-    if (activeFilter === "Dry pantry") return item.category === "Pantry" || item.category === "Dry pantry";
-    return item.category === activeFilter;
+    const itemCat = normalizeCategory(item.category);
+
+    if (activeFilter === "Dry pantry") {
+      return itemCat === "pantry" || itemCat === "dry pantry";
+    }
+    return itemCat === normalizeCategory(activeFilter);
   });
 
   // Counts
+  const getCount = (filterName: string) => {
+    if (filterName === "All") return items.length;
+    return items.filter(item => {
+      const itemCat = normalizeCategory(item.category);
+      if (filterName === "Dry pantry") {
+        return itemCat === "pantry" || itemCat === "dry pantry";
+      }
+      return itemCat === normalizeCategory(filterName);
+    }).length;
+  };
+
   const counts = {
     All: items.length,
-    Fridge: items.filter(i => i.category === "Fridge").length,
-    Freezer: items.filter(i => i.category === "Freezer").length,
-    "Dry pantry": items.filter(i => i.category === "Pantry" || i.category === "Dry pantry").length,
+    Fridge: getCount("Fridge"),
+    Freezer: getCount("Freezer"),
+    "Dry pantry": getCount("Dry pantry"),
   };
 
   if (!ishydrated) return <div>{t.common.loading}</div>;
@@ -141,6 +171,13 @@ export default function InventoryPage() {
         open={isDialogOpen}
         onOpenChange={setIsDialogOpen}
         itemToEdit={itemToEdit}
+      />
+
+      <DeleteConfirmationDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        onConfirm={confirmDelete}
+        itemName={itemToDelete?.name || ""}
       />
     </div>
   );

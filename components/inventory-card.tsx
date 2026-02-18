@@ -83,6 +83,19 @@ export function InventoryCard({ item, onEdit, onDelete }: InventoryCardProps) {
             {item.category || "Pantry"}
           </div>
         </div>
+
+        {/* Delete Button */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 text-muted-foreground hover:text-destructive ml-2 shrink-0"
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete(item._id || item.localId || "");
+          }}
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
       </CardContent>
     </Card>
   );
