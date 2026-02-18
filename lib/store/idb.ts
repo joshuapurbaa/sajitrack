@@ -2,11 +2,13 @@ import { openDB } from 'idb';
 import { StateStorage } from 'zustand/middleware';
 
 const DB_NAME = 'pantry-db';
-const DB_VERSION = 5; // Bump version to force upgrade
+
+
+const DB_VERSION = 7; // Bump version to force upgrade
 
 const initDB = async () => {
     return openDB(DB_NAME, DB_VERSION, {
-        upgrade(db) {
+        upgrade(db, oldVersion, newVersion, transaction) {
             if (!db.objectStoreNames.contains('inventory')) {
                 db.createObjectStore('inventory');
             }
@@ -16,6 +18,12 @@ const initDB = async () => {
             if (!db.objectStoreNames.contains('shopping')) {
                 db.createObjectStore('shopping');
             }
+
+            // Re-create recipes store to ensure correct configuration (out-of-line keys)
+            if (db.objectStoreNames.contains('recipes')) {
+                db.deleteObjectStore('recipes');
+            }
+            db.createObjectStore('recipes');
         },
     });
 };

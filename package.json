@@ -17,6 +17,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "idb": "^8.0.3",
+    "lottie-react": "^2.4.1",
     "lucide-react": "^0.563.0",
     "mongodb": "^7.1.0",
     "mongoose": "^9.2.1",
