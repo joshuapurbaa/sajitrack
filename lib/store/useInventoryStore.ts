@@ -1,7 +1,7 @@
 
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { openDB } from 'idb';
+import { createIDBStorage } from './idb';
 
 export interface InventoryItem {
   _id?: string; // MongoDB ID
@@ -32,27 +32,6 @@ interface InventoryState {
   sync: () => Promise<void>;
 }
 
-// Custom storage adapter for IndexedDB
-const idbStorage = {
-  getItem: async (name: string): Promise<string | null> => {
-    const db = await openDB('pantry-db', 1, {
-      upgrade(db) {
-        db.createObjectStore('inventory');
-      },
-    });
-    const val = await db.get('inventory', name);
-    return val || null;
-  },
-  setItem: async (name: string, value: string): Promise<void> => {
-    const db = await openDB('pantry-db', 1);
-    await db.put('inventory', value, name);
-  },
-  removeItem: async (name: string): Promise<void> => {
-    const db = await openDB('pantry-db', 1);
-    await db.delete('inventory', name);
-  },
-};
-
 export const useInventoryStore = create<InventoryState>()(
   persist(
     (set, get) => ({
@@ -61,7 +40,7 @@ export const useInventoryStore = create<InventoryState>()(
       addItem: (item) => set((state) => ({ items: [...state.items, item], syncPending: true })),
       setItems: (items) => set({ items }),
       updateItem: (id, updates) => set((state) => ({
-        items: state.items.map((item) => 
+        items: state.items.map((item) =>
           (item._id === id || item.localId === id) ? { ...item, ...updates } : item
         ),
         syncPending: true
@@ -74,20 +53,20 @@ export const useInventoryStore = create<InventoryState>()(
       sync: async () => {
         const state = get();
         if (state.syncPending && navigator.onLine) {
-           // Actual implementation would invoke api.syncInventory(state.items)
-           // and update items with server IDs.
-           // For now, we'll just toggle the flag if successful.
-           // This is a placeholder for the robust sync logic.
-           console.log('Syncing...');
-           set({ syncPending: false });
+          // Actual implementation would invoke api.syncInventory(state.items)
+          // and update items with server IDs.
+          // For now, we'll just toggle the flag if successful.
+          // This is a placeholder for the robust sync logic.
+          console.log('Syncing...');
+          set({ syncPending: false });
         }
       }
     }),
     {
       name: 'inventory-storage',
-      storage: createJSONStorage(() => idbStorage),
+      storage: createJSONStorage(() => createIDBStorage('inventory')),
       onRehydrateStorage: () => (state) => {
-         // Optional: trigger sync on load if online
+        // Optional: trigger sync on load if online
       }
     }
   )
