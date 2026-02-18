@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -48,8 +48,19 @@ const purchaseSchema = z.object({
   })).min(1, "At least one item required"),
 });
 
-export function AddPurchaseDialog() {
-  const [open, setOpen] = useState(false);
+export interface AddPurchaseDialogProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  initialItems?: { name: string; quantity: string; price: string; unit: string }[];
+  onSuccess?: () => void;
+}
+
+export function AddPurchaseDialog({ open: controlledOpen, onOpenChange: setControlledOpen, initialItems, onSuccess }: AddPurchaseDialogProps) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isControlled = controlledOpen !== undefined;
+  const open = isControlled ? controlledOpen : internalOpen;
+  const setOpen = isControlled ? setControlledOpen : setInternalOpen;
+
   const addPurchase = usePurchaseStore((state) => state.addPurchase);
   const addItem = useInventoryStore((state) => state.addItem);
   const { currency } = useCurrency();
@@ -68,6 +79,40 @@ export function AddPurchaseDialog() {
     control: form.control,
     name: "items",
   });
+
+  // Effect to reset form when dialog opens or initialItems change
+  useEffect(() => {
+    if (open) {
+      if (initialItems && initialItems.length > 0) {
+        form.reset({
+          storeName: "",
+          date: new Date().toISOString().split('T')[0],
+          items: initialItems,
+        });
+      } else {
+        // Only reset if it's a fresh open without initial items (optional, but good for cleaning up)
+        // Check if form is dirty? For now, we rely on the component mounting/unmounting behavior mostly if it wasn't controlled.
+        // But since it's controlled/dialog, we might want to reset on close or open.
+        // If we don't reset, previous inputs persist. 
+        // Let's reset to default if no initialItems provided and it was closed. 
+        // But we can't easily detect "just opened" in this effect without a ref or careful dependency.
+        // A simple way is to reset when `open` becomes true.
+      }
+    }
+  }, [open, initialItems, form]);
+
+  // Handle form reset on open change more explicitly if needed, but the above effect handles the initialItems case.
+  // Let's ensure we respect the "reset on open" behavior for standard usage too.
+  useEffect(() => {
+    if (open && (!initialItems || initialItems.length === 0)) {
+      form.reset({
+        storeName: "",
+        date: new Date().toISOString().split('T')[0],
+        items: [{ name: "", quantity: "1", price: "0", unit: "pcs" }],
+      })
+    }
+  }, [open, initialItems, form]);
+
 
   function onSubmit(values: z.infer<typeof purchaseSchema>) {
     const items = values.items.map(item => ({
@@ -102,15 +147,20 @@ export function AddPurchaseDialog() {
     });
 
     form.reset();
-    setOpen(false);
+    setOpen?.(false); // This calls the appropriate setter (internal or controlled)
+    if (onSuccess) {
+      onSuccess();
+    }
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="fixed bottom-20 right-4 rounded-full h-14 w-14 shadow-lg" size="icon">
-          <Plus className="h-6 w-6" />
-        </Button>
+        {!isControlled && (
+          <Button className="fixed bottom-20 right-4 rounded-full h-14 w-14 shadow-lg" size="icon">
+            <Plus className="h-6 w-6" />
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>

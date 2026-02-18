@@ -91,10 +91,20 @@ export const translations = {
         expenses: {
             title: "Expenses & Purchases",
             total_spending: "Total Spending",
+            today_spending: "Today's Spending",
             lifetime_total: "Lifetime total tracked",
             recent_purchases: "Recent Purchases",
             no_purchases: "No purchases logged yet.",
             store_name: "Store Name"
+        },
+        shoppingList: {
+            title: "Shopping Plan",
+            addRecent: "Add Recent",
+            recentItems: "Recent Items",
+            noRecent: "No recent items found",
+            addItemPlaceholder: "Add item (e.g., Milk)",
+            emptyList: "Your shopping plan is empty",
+            logSelected: "Log Selected"
         }
     },
     es: {
@@ -189,10 +199,20 @@ export const translations = {
         expenses: {
             title: "Gastos y Compras",
             total_spending: "Gasto Total",
+            today_spending: "Gasto de Hoy",
             lifetime_total: "Total histórico rastreado",
             recent_purchases: "Compras Recientes",
             no_purchases: "No hay compras registradas aún.",
             store_name: "Nombre de la Tienda"
+        },
+        shoppingList: {
+            title: "Plan de Compras",
+            addRecent: "Añadir Reciente",
+            recentItems: "Artículos Recientes",
+            noRecent: "No se encontraron artículos recientes",
+            addItemPlaceholder: "Añadir artículo (ej. Leche)",
+            emptyList: "Tu plan de compras está vacío",
+            logSelected: "Registrar Seleccionados"
         }
     },
     fr: {
@@ -275,7 +295,7 @@ export const translations = {
             subtitle: "Sélectionnez des ingrédients pour générer des recettes avec l'IA.",
             pantry_ingredients: "Ingrédients du Garde-manger",
             pantry_empty: "Votre garde-manger est vide.",
-            generate: "Générer des Recettes",
+            generate: "Générer des Recetas",
             generating: "Génération en cours...",
             select_ingredients_error: "Veuillez sélectionner au moins un ingrédient.",
             generic_error: "Quelque chose s'est mal passé. Veuillez réessayer.",
@@ -287,10 +307,20 @@ export const translations = {
         expenses: {
             title: "Dépenses et Achats",
             total_spending: "Dépenses Totales",
+            today_spending: "Dépenses d'Aujourd'hui",
             lifetime_total: "Total suivi à vie",
             recent_purchases: "Achats Récents",
             no_purchases: "Aucun achat enregistré pour le moment.",
             store_name: "Nom du Magasin"
+        },
+        shoppingList: {
+            title: "Plan de Courses",
+            addRecent: "Ajouter Récent",
+            recentItems: "Articles Récents",
+            noRecent: "Aucun article récent trouvé",
+            addItemPlaceholder: "Ajouter un article (ex. Lait)",
+            emptyList: "Votre plan de courses est vide",
+            logSelected: "Enregistrer la Sélection"
         }
     },
     de: {
@@ -385,10 +415,20 @@ export const translations = {
         expenses: {
             title: "Ausgaben & Einkäufe",
             total_spending: "Gesamtausgaben",
+            today_spending: "Ausgaben Heute",
             lifetime_total: "Gesamtsumme verfolgt",
             recent_purchases: "Kürzliche Einkäufe",
             no_purchases: "Noch keine Einkäufe protokolliert.",
             store_name: "Ladenname"
+        },
+        shoppingList: {
+            title: "Einkaufsplan",
+            addRecent: "Kürzlich Hinzufügen",
+            recentItems: "Kürzliche Artikel",
+            noRecent: "Keine kürzlichen Artikel gefunden",
+            addItemPlaceholder: "Artikel hinzufügen (z.B. Milch)",
+            emptyList: "Ihr Einkaufsplan ist leer",
+            logSelected: "Auswahl Protokollieren"
         }
     },
     id: {
@@ -483,10 +523,20 @@ export const translations = {
         expenses: {
             title: "Pengeluaran & Pembelian",
             total_spending: "Total Pengeluaran",
+            today_spending: "Pengeluaran Hari Ini",
             lifetime_total: "Total seumur hidup",
             recent_purchases: "Pembelian Terakhir",
             no_purchases: "Belum ada pembelian tercatat.",
             store_name: "Nama Toko"
+        },
+        shoppingList: {
+            title: "Rencana Belanja",
+            addRecent: "Tambah Terkini",
+            recentItems: "Barang Terkini",
+            noRecent: "Tidak ada barang terkini ditemukan",
+            addItemPlaceholder: "Tambah barang (misal: Susu)",
+            emptyList: "Rencana belanja Anda kosong",
+            logSelected: "Catat Terpilih"
         }
     }
 };
