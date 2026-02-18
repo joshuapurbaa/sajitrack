@@ -182,7 +182,7 @@ export function AddItemDialog({ open, onOpenChange, itemToEdit }: AddItemDialogP
                 <FormItem>
                   <FormLabel>{t.inventory.expiry_date} ({t.common.optional})</FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} />
+                    <Input type="date" {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
