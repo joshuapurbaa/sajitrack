@@ -19,6 +19,7 @@ export const metadata: Metadata = {
 
 import { ServiceWorkerRegister } from "@/components/sw-register";
 import { ThemeProvider } from "@/components/theme-provider";
+import { InstallPrompt } from "@/components/install-prompt";
 
 // ...
 
@@ -39,6 +40,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <ServiceWorkerRegister />
+          <InstallPrompt />
           {children}
         </ThemeProvider>
       </body>
