@@ -36,6 +36,7 @@ export function ShoppingList() {
     const { purchases } = usePurchaseStore();
     const { t } = useTranslation();
     const [newItemName, setNewItemName] = useState("");
+    const [newItemQuantity, setNewItemQuantity] = useState("1");
     const [newItemUnit, setNewItemUnit] = useState("pcs");
     const [isLogPurchaseOpen, setIsLogPurchaseOpen] = useState(false);
 
@@ -48,15 +49,16 @@ export function ShoppingList() {
 
     const handleAddItem = (e?: React.FormEvent) => {
         e?.preventDefault();
-        if (newItemName.trim()) {
-            addItem(newItemName.trim(), newItemUnit);
+        if (newItemName.trim() && newItemQuantity.trim()) {
+            addItem(newItemName.trim(), newItemQuantity.trim(), newItemUnit);
             setNewItemName("");
+            setNewItemQuantity("1");
             setNewItemUnit("pcs");
         }
     };
 
     const handleAddRecent = (name: string) => {
-        addItem(name);
+        addItem(name, "1");
     };
 
     const completedItems = items.filter(i => i.completed);
@@ -121,6 +123,16 @@ export function ShoppingList() {
                             onChange={(e) => setNewItemName(e.target.value)}
                         />
                     </div>
+                    <div className="w-[80px]">
+                        <Input
+                            type="number"
+                            min="0.1"
+                            step="any"
+                            placeholder="Qty"
+                            value={newItemQuantity}
+                            onChange={(e) => setNewItemQuantity(e.target.value)}
+                        />
+                    </div>
                     <Select value={newItemUnit} onValueChange={setNewItemUnit}>
                         <SelectTrigger className="w-[80px]">
                             <SelectValue placeholder="Unit" />
@@ -160,7 +172,7 @@ export function ShoppingList() {
                                         className={`text-sm font-medium cursor-pointer truncate ${item.completed ? "line-through text-muted-foreground" : ""
                                             }`}
                                     >
-                                        {item.name} <span className="text-muted-foreground text-xs ml-1">({item.unit || 'pcs'})</span>
+                                        {item.name} <span className="text-muted-foreground text-xs ml-1">({item.quantity || "1"} {item.unit || 'pcs'})</span>
                                     </label>
                                 </div>
                                 <Button
@@ -193,7 +205,7 @@ export function ShoppingList() {
                     onOpenChange={setIsLogPurchaseOpen}
                     initialItems={completedItems.map(i => ({
                         name: i.name,
-                        quantity: "1",
+                        quantity: i.quantity || "1",
                         price: "0",
                         unit: i.unit || "pcs"
                     }))}

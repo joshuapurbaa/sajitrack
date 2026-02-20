@@ -6,12 +6,13 @@ export interface ShoppingItem {
     id: string;
     name: string;
     completed: boolean;
+    quantity?: string;
     unit?: string;
 }
 
 interface ShoppingState {
     items: ShoppingItem[];
-    addItem: (name: string, unit?: string) => void;
+    addItem: (name: string, quantity?: string, unit?: string) => void;
     toggleItem: (id: string) => void;
     removeItem: (id: string) => void;
     clearItems: () => void;
@@ -22,8 +23,8 @@ export const useShoppingStore = create<ShoppingState>()(
     persist(
         (set) => ({
             items: [],
-            addItem: (name, unit = 'pcs') => set((state) => ({
-                items: [...state.items, { id: crypto.randomUUID(), name, completed: false, unit }]
+            addItem: (name, quantity = "1", unit = 'pcs') => set((state) => ({
+                items: [...state.items, { id: crypto.randomUUID(), name, completed: false, quantity, unit }]
             })),
             toggleItem: (id) => set((state) => ({
                 items: state.items.map((item) =>
