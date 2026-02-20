@@ -15,6 +15,24 @@ interface InventoryCardProps {
 export function InventoryCard({ item, onEdit, onDelete }: InventoryCardProps) {
   const isLowStock = item.quantity <= (item.threshold || 0);
 
+  const rawCategory = (item.category || "").toLowerCase().trim();
+  let displayCategory = item.category || "Uncategorized";
+  if (!item.category || rawCategory === "") displayCategory = "Uncategorized";
+
+  let categoryStyles = "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400";
+  let cardStyles = "bg-slate-50/50 border-slate-200 hover:bg-slate-100/50 dark:bg-slate-950/20 dark:border-slate-800 dark:hover:bg-slate-900/40";
+
+  if (rawCategory === "fridge") {
+    categoryStyles = "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400";
+    cardStyles = "bg-blue-50/50 border-blue-200 hover:bg-blue-100/50 dark:bg-blue-950/20 dark:border-blue-900/50 dark:hover:bg-blue-900/40";
+  } else if (rawCategory === "freezer") {
+    categoryStyles = "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-400";
+    cardStyles = "bg-cyan-50/50 border-cyan-200 hover:bg-cyan-100/50 dark:bg-cyan-950/20 dark:border-cyan-900/50 dark:hover:bg-cyan-900/40";
+  } else if (rawCategory === "pantry" || rawCategory === "dry pantry") {
+    categoryStyles = "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400";
+    cardStyles = "bg-amber-50/50 border-amber-200 hover:bg-amber-100/50 dark:bg-amber-950/20 dark:border-amber-900/50 dark:hover:bg-amber-900/40";
+  }
+
   // Calculate expiry status
   const expiryDate = item.expiryDate ? new Date(item.expiryDate) : null;
   const purchaseDate = item.purchaseDate ? new Date(item.purchaseDate) : null;
@@ -57,38 +75,18 @@ export function InventoryCard({ item, onEdit, onDelete }: InventoryCardProps) {
 
   return (
     <Card
-      className="w-full mb-3 cursor-pointer hover:bg-accent/50 transition-colors border-none shadow-sm"
+      className={cn(
+        "w-full h-full cursor-pointer transition-colors border shadow-sm relative overflow-hidden group",
+        cardStyles
+      )}
       onClick={() => onEdit(item)}
     >
-      <CardContent className="p-4 flex items-center gap-4">
-        {/* Icon Section */}
-        <div className="flex-shrink-0">
-          {DisplayIcon}
-        </div>
-
-        {/* Main Content */}
-        <div className="flex-1 min-w-0">
-          <h3 className="font-bold text-base truncate">{item.name}</h3>
-          <p className={cn("text-sm", statusColor)}>
-            {statusText}
-          </p>
-        </div>
-
-        {/* Right Section: Quantity & Location */}
-        <div className="text-right flex flex-col items-end">
-          <div className="font-medium text-base">
-            {item.quantity} <span className="text-sm text-muted-foreground">{item.unit}</span>
-          </div>
-          <div className="text-sm text-muted-foreground">
-            {item.category || "Pantry"}
-          </div>
-        </div>
-
+      <CardContent className="p-4 flex flex-col items-center text-center gap-2 h-full">
         {/* Delete Button */}
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 text-muted-foreground hover:text-destructive ml-2 shrink-0"
+          className="absolute top-1 right-1 h-8 w-8 text-muted-foreground hover:text-destructive shrink-0 z-10"
           onClick={(e) => {
             e.stopPropagation();
             onDelete(item._id || item.localId || "");
@@ -96,6 +94,29 @@ export function InventoryCard({ item, onEdit, onDelete }: InventoryCardProps) {
         >
           <Trash2 className="h-4 w-4" />
         </Button>
+
+        {/* Icon Section */}
+        <div className="flex-shrink-0 mt-1">
+          {DisplayIcon}
+        </div>
+
+        {/* Main Content */}
+        <div className="flex-1 w-full min-w-0 mt-1">
+          <h3 className="font-bold text-sm sm:text-base w-full truncate">{item.name}</h3>
+          <p className={cn("text-xs mt-1", statusColor)}>
+            {statusText}
+          </p>
+        </div>
+
+        {/* Bottom Section: Location & Quantity */}
+        <div className="w-full flex justify-between items-center mt-auto pt-3 border-t">
+          <div className={cn("text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full truncate max-w-[50%]", categoryStyles)}>
+            {displayCategory}
+          </div>
+          <div className="font-bold text-sm bg-primary/10 text-primary px-2 py-0.5 rounded-md flex-shrink-0">
+            {item.quantity} <span className="text-xs font-normal">{item.unit}</span>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );

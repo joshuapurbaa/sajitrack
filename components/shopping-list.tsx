@@ -167,17 +167,20 @@ export function ShoppingList() {
                         items.map((item) => (
                             <div
                                 key={item.id}
-                                className="flex items-center justify-between p-2 rounded-lg border bg-card hover:bg-accent/50 transition-colors group"
+                                className="flex items-center justify-between p-2 rounded-lg border bg-card hover:bg-accent/50 transition-colors group cursor-pointer"
+                                onClick={() => toggleItem(item.id)}
                             >
                                 <div className="flex items-center gap-3 overflow-hidden">
-                                    <Checkbox
-                                        checked={item.completed}
-                                        onCheckedChange={() => toggleItem(item.id)}
-                                        id={`item-${item.id}`}
-                                    />
+                                    <div onClick={(e) => e.stopPropagation()} className="flex items-center">
+                                        <Checkbox
+                                            checked={item.completed}
+                                            onCheckedChange={() => toggleItem(item.id)}
+                                            id={`item-${item.id}`}
+                                        />
+                                    </div>
                                     <label
                                         htmlFor={`item-${item.id}`}
-                                        className={`text-sm font-medium cursor-pointer truncate ${item.completed ? "line-through text-muted-foreground" : ""
+                                        className={`text-sm font-medium cursor-pointer truncate pointer-events-none ${item.completed ? "line-through text-muted-foreground" : ""
                                             }`}
                                     >
                                         {item.name} <span className="text-muted-foreground text-xs ml-1">({item.quantity || "1"} {item.unit || 'pcs'})</span>
@@ -187,7 +190,10 @@ export function ShoppingList() {
                                     variant="ghost"
                                     size="icon"
                                     className="h-8 w-8 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-                                    onClick={() => removeItem(item.id)}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        removeItem(item.id);
+                                    }}
                                 >
                                     <Trash className="h-4 w-4" />
                                 </Button>
