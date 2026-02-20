@@ -104,7 +104,8 @@ export const translations = {
             noRecent: "No recent items found",
             addItemPlaceholder: "Add item (e.g., Milk)",
             emptyList: "Your shopping plan is empty",
-            logSelected: "Log Selected"
+            logSelected: "Log Selected",
+            aiPlanner: "Ask AI"
         }
     },
     es: {
@@ -212,7 +213,8 @@ export const translations = {
             noRecent: "No se encontraron artículos recientes",
             addItemPlaceholder: "Añadir artículo (ej. Leche)",
             emptyList: "Tu plan de compras está vacío",
-            logSelected: "Registrar Seleccionados"
+            logSelected: "Registrar Seleccionados",
+            aiPlanner: "Preguntar IA"
         }
     },
     fr: {
@@ -320,7 +322,8 @@ export const translations = {
             noRecent: "Aucun article récent trouvé",
             addItemPlaceholder: "Ajouter un article (ex. Lait)",
             emptyList: "Votre plan de courses est vide",
-            logSelected: "Enregistrer la Sélection"
+            logSelected: "Enregistrer la Sélection",
+            aiPlanner: "Demander à l'IA"
         }
     },
     de: {
@@ -428,7 +431,8 @@ export const translations = {
             noRecent: "Keine kürzlichen Artikel gefunden",
             addItemPlaceholder: "Artikel hinzufügen (z.B. Milch)",
             emptyList: "Ihr Einkaufsplan ist leer",
-            logSelected: "Auswahl Protokollieren"
+            logSelected: "Auswahl Protokollieren",
+            aiPlanner: "KI Fragen"
         }
     },
     id: {
@@ -536,7 +540,8 @@ export const translations = {
             noRecent: "Tidak ada barang terkini ditemukan",
             addItemPlaceholder: "Tambah barang (misal: Susu)",
             emptyList: "Rencana belanja Anda kosong",
-            logSelected: "Catat Terpilih"
+            logSelected: "Catat Terpilih",
+            aiPlanner: "Tanya AI"
         }
     }
 };

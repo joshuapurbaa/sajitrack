@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Plus, Trash, History, ShoppingCart, Check } from "lucide-react";
+import { Plus, Trash, History, ShoppingCart, Check, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -19,6 +19,7 @@ import {
 import { useShoppingStore } from "@/lib/store/useShoppingStore";
 import { usePurchaseStore } from "@/lib/store/usePurchaseStore";
 import { AddPurchaseDialog } from "./add-purchase-dialog";
+import { AIGroceryPlanner } from "./ai-grocery-planner";
 import { useTranslation } from "@/lib/hooks/useTranslation";
 
 import {
@@ -39,6 +40,7 @@ export function ShoppingList() {
     const [newItemQuantity, setNewItemQuantity] = useState("1");
     const [newItemUnit, setNewItemUnit] = useState("pcs");
     const [isLogPurchaseOpen, setIsLogPurchaseOpen] = useState(false);
+    const [isAIPlannerOpen, setIsAIPlannerOpen] = useState(false);
 
     // Get unique items from purchase history
     const recentItems = useMemo(() => {
@@ -78,41 +80,47 @@ export function ShoppingList() {
                         {t.shoppingList?.title || "Shopping Plan"}
                     </div>
                 </CardTitle>
-                <Popover>
-                    <PopoverTrigger asChild>
-                        <Button variant="outline" size="sm">
-                            <History className="mr-2 h-4 w-4" />
-                            {t.shoppingList?.addRecent || "Add Recent"}
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-60 p-0" align="end">
-                        <div className="p-2">
-                            <div className="text-sm font-medium px-2 py-1.5 text-muted-foreground">
-                                {t.shoppingList?.recentItems || "Recent Items"}
+                <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={() => setIsAIPlannerOpen(true)} className="gap-2">
+                        <Sparkles className="h-4 w-4 text-primary" />
+                        <span className="hidden sm:inline">{t.shoppingList?.aiPlanner || "Ask AI"}</span>
+                    </Button>
+                    <Popover>
+                        <PopoverTrigger asChild>
+                            <Button variant="outline" size="sm">
+                                <History className="mr-2 h-4 w-4" />
+                                {t.shoppingList?.addRecent || "Add Recent"}
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-60 p-0" align="end">
+                            <div className="p-2">
+                                <div className="text-sm font-medium px-2 py-1.5 text-muted-foreground">
+                                    {t.shoppingList?.recentItems || "Recent Items"}
+                                </div>
+                                {recentItems.length === 0 ? (
+                                    <div className="px-2 py-1.5 text-sm text-center text-muted-foreground">
+                                        {t.shoppingList?.noRecent || "No recent items found"}
+                                    </div>
+                                ) : (
+                                    <div className="grid gap-1">
+                                        {recentItems.map((item, i) => (
+                                            <Button
+                                                key={i}
+                                                variant="ghost"
+                                                size="sm"
+                                                className="justify-start font-normal h-8"
+                                                onClick={() => handleAddRecent(item)}
+                                            >
+                                                <Plus className="mr-2 h-3 w-3" />
+                                                {item}
+                                            </Button>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
-                            {recentItems.length === 0 ? (
-                                <div className="px-2 py-1.5 text-sm text-center text-muted-foreground">
-                                    {t.shoppingList?.noRecent || "No recent items found"}
-                                </div>
-                            ) : (
-                                <div className="grid gap-1">
-                                    {recentItems.map((item, i) => (
-                                        <Button
-                                            key={i}
-                                            variant="ghost"
-                                            size="sm"
-                                            className="justify-start font-normal h-8"
-                                            onClick={() => handleAddRecent(item)}
-                                        >
-                                            <Plus className="mr-2 h-3 w-3" />
-                                            {item}
-                                        </Button>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    </PopoverContent>
-                </Popover>
+                        </PopoverContent>
+                    </Popover>
+                </div>
             </CardHeader>
             <CardContent className="space-y-4">
                 <form onSubmit={handleAddItem} className="flex gap-2">
@@ -210,6 +218,11 @@ export function ShoppingList() {
                         unit: i.unit || "pcs"
                     }))}
                     onSuccess={handlePurchaseComplete}
+                />
+
+                <AIGroceryPlanner
+                    open={isAIPlannerOpen}
+                    onOpenChange={setIsAIPlannerOpen}
                 />
             </CardContent>
         </Card>
