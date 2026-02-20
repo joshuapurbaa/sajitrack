@@ -23,7 +23,7 @@ export function DesktopNav() {
   return (
     <nav className="hidden md:flex w-64 flex-col border-r bg-background h-screen fixed left-0 top-0 overflow-y-auto">
       <div className="p-6 flex justify-between items-center">
-        <h1 className="text-xl font-bold">SajiTrack</h1>
+        <h1 className="text-xl font-bold">Saji Tracker</h1>
         <ModeToggle />
       </div>
       <div className="flex-1 px-4 space-y-2">

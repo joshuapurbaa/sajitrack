@@ -90,7 +90,7 @@ export function InstallPrompt() {
                         </Button>
                     </div>
                     <CardDescription>
-                        Install SajiTrack for a better experience
+                        Install Saji Tracker for a better experience
                     </CardDescription>
                 </CardHeader>
                 <CardContent>

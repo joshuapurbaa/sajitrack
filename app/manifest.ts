@@ -3,8 +3,8 @@ import type { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Food & Pantry Monitor',
-    short_name: 'PantryMonitor',
+    name: 'Saji Tracker',
+    short_name: 'Saji Tracker',
     description: 'Track food inventory, expenses, and generate recipes with AI.',
     start_url: '/',
     display: 'standalone',

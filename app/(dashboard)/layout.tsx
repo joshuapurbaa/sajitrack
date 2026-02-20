@@ -11,7 +11,7 @@ export default function DashboardLayout({
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <div className="md:hidden p-4 border-b flex justify-between items-center bg-background sticky top-0 z-10">
-        <h1 className="text-xl font-bold">SajiTrack</h1>
+        <h1 className="text-xl font-bold">Saji Tracker</h1>
         <ModeToggle />
       </div>
       <DesktopNav />
